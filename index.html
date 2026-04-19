@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>FocusTimer — Сессии глубокого фокуса</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Дополнительная настройка Tailwind для более выразительных теней и градиентов -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 25px -5px rgba(139, 92, 246, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Плавный скролл для якорей и дополнительные кастомные стили */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background: #0B0C10;
+            background-image: radial-gradient(circle at 25% 40%, rgba(79, 70, 229, 0.08) 0%, rgba(0, 0, 0, 0) 60%);
+        }
+        /* Стили для SVG-анимаций / тонких эффектов */
+        .focus-circle {
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 0.6; transform: scale(1); }
+        }
+        .bolt-flash {
+            animation: subtleFlicker 2.5s infinite alternate;
+        }
+        @keyframes subtleFlicker {
+            0% { opacity: 0.7; filter: drop-shadow(0 0 2px #8B5CF6);}
+            100% { opacity: 1; filter: drop-shadow(0 0 8px #C084FC);}
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-200 antialiased">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-black/40 backdrop-blur-xl border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-glow">
+                    <span class="text-white font-bold text-xl">⌛</span>
+                </div>
+                <span class="text-2xl font-bold bg-gradient-to-r from-white via-indigo-200 to-purple-300 bg-clip-text text-transparent">FocusTimer</span>
+            </div>
+            <nav class="hidden md:flex items-center gap-8 text-gray-300 font-medium">
+                <a href="#how-it-works" class="hover:text-white transition duration-300">Как работает</a>
+                <a href="#pricing" class="hover:text-white transition duration-300">Тарифы</a>
+                <a href="#apply" class="px-5 py-2 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold shadow-md hover:shadow-glow transition">Оформить</a>
+            </nav>
+            <button class="md:hidden text-gray-300">☰</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero секция -->
+        <section class="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-24 flex flex-col lg:flex-row items-center gap-12">
+            <!-- Левый блок текста -->
+            <div class="flex-1 text-center lg:text-left">
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
+                    <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Глубокий фокус</span><br>
+                    без отвлечений
+                </h1>
+                <p class="mt-6 text-lg text-gray-400 max-w-xl mx-auto lg:mx-0">
+                    Планируй сессии и перерывы по научной методике. Таймер, который перезагружает продуктивность. Меньше хаоса — больше результата.
+                </p>
+                <div class="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start">
+                    <a href="#apply" class="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 font-semibold shadow-lg transition-all transform hover:scale-105">Начать фокус</a>
+                    <a href="#how-it-works" class="px-8 py-3 rounded-full border border-white/20 hover:bg-white/5 transition">Как это работает</a>
+                </div>
+            </div>
+            <!-- Правая SVG-иллюстрация (таймер + концентрические круги + молния фокуса) -->
+            <div class="flex-1 flex justify-center">
+                <div class="relative w-80 h-80 md:w-[380px] md:h-[380px]">
+                    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full drop-shadow-2xl">
+                        <defs>
+                            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#6366F1" />
+                                <stop offset="100%" stop-color="#C084FC" />
+                            </linearGradient>
+                            <linearGradient id="innerGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#4F46E5" />
+                                <stop offset="100%" stop-color="#A855F7" />
+                            </linearGradient>
+                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+                                <feMerge>
+                                    <feMergeNode in="offsetblur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Концентрические круги фоновые -->
+                        <circle cx="200" cy="200" r="180" fill="none" stroke="rgba(99,102,241,0.15)" stroke-width="2" stroke-dasharray="6 6" />
+                        <circle cx="200" cy="200" r="150" fill="none" stroke="rgba(139,92,246,0.25)" stroke-width="3" />
+                        <circle cx="200" cy="200" r="120" fill="none" stroke="url(#ringGrad)" stroke-width="4" stroke-dasharray="10 8" class="focus-circle" />
+                        <circle cx="200" cy="200" r="90" fill="none" stroke="rgba(196,181,253,0.4)" stroke-width="5" />
+                        <!-- Основной круг таймера (циферблат) -->
+                        <circle cx="200" cy="200" r="72" fill="rgba(15,23,42,0.8)" stroke="url(#innerGrad)" stroke-width="6" filter="url(#glow)" />
+                        <!-- Центральное число -->
+                        <text x="200" y="210" text-anchor="middle" fill="white" font-size="42" font-weight="bold" font-family="monospace" letter-spacing="2">25</text>
+                        <text x="200" y="228" text-anchor="middle" fill="#A1A1AA" font-size="12" font-weight="500">МИН</text>
+                        <!-- Секундная дуга имитации прогресса -->
+                        <path d="M200 128 A72 72 0 0 1 265 180" stroke="#C084FC" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="10 100" opacity="0.9" />
+                        <!-- Молния (символ фокуса) -->
+                        <g transform="translate(270, 100) rotate(15)" class="bolt-flash">
+                            <path d="M0,0 L-15,38 L8,36 L-4,72 L32,30 L6,33 L20,0 Z" fill="url(#innerGrad)" stroke="#E9D5FF" stroke-width="1.5" filter="url(#glow)" />
+                        </g>
+                        <!-- Небольшие точки фокуса -->
+                        <circle cx="140" cy="120" r="5" fill="#818CF8" opacity="0.7" />
+                        <circle cx="270" cy="270" r="6" fill="#A78BFA" opacity="0.6" />
+                        <circle cx="110" cy="260" r="4" fill="#C4B5FD" opacity="0.8" />
+                        <circle cx="295" cy="150" r="4.5" fill="#8B5CF6" opacity="0.9" />
+                        <!-- Спицы таймера/стрелки -->
+                        <line x1="200" y1="200" x2="240" y2="145" stroke="#F0F0FF" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Как работает: 3 шага -->
+        <section id="how-it-works" class="max-w-7xl mx-auto px-6 lg:px-8 py-20">
+            <div class="text-center mb-14">
+                <span class="text-indigo-400 font-semibold tracking-wide uppercase text-sm">Система глубокой работы</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2">Как работает FocusTimer</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto mt-4">Простые шаги для максимальной продуктивности без выгорания</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-indigo-500/40 transition">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl font-black shadow-lg mb-5">1</div>
+                    <h3 class="text-xl font-bold">Выбери сессию</h3>
+                    <p class="text-gray-400 mt-2">25 минут фокуса без соцсетей, уведомлений и отвлечений.</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-indigo-500/40 transition">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl font-black shadow-lg mb-5">2</div>
+                    <h3 class="text-xl font-bold">Короткий перерыв</h3>
+                    <p class="text-gray-400 mt-2">5 минут отдыха, затем снова в бой. Баланс без выгорания.</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-indigo-500/40 transition">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl font-black shadow-lg mb-5">3</div>
+                    <h3 class="text-xl font-bold">Аналитика & ритм</h3>
+                    <p class="text-gray-400 mt-2">Отслеживай сессии, строй графики и улучшай концентрацию.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Тарифы Start / Plus / Pro -->
+        <section id="pricing" class="max-w-7xl mx-auto px-6 lg:px-8 py-20">
+            <div class="text-center mb-12">
+                <span class="text-purple-400 font-semibold uppercase text-sm">Инвестиция в фокус</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2">Простые тарифы. Никакой магии.</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Start -->
+                <div class="rounded-2xl bg-gradient-to-b from-gray-900/80 to-gray-800/40 border border-gray-700 p-6 backdrop-blur-sm hover:scale-[1.02] transition duration-300">
+                    <h3 class="text-2xl font-bold">Start</h3>
+                    <div class="mt-4"><span class="text-4xl font-extrabold">₽590</span><span class="text-gray-400">/мес</span></div>
+                    <ul class="mt-6 space-y-3">
+                        <li class="flex items-center gap-2">✅ Базовые сессии 25/5</li>
+                        <li class="flex items-center gap-2">✅ Статистика недели</li>
+                        <li class="flex items-center gap-2">✅ Веб-таймер + звуки</li>
+                        <li class="flex items-center gap-2 text-gray-500">❌ Расширенная аналитика</li>
+                    </ul>
+                    <a href="#apply" class="block text-center mt-8 py-2.5 rounded-full border border-indigo-500 text-indigo-300 hover:bg-indigo-600/20 transition">Выбрать</a>
+                </div>
+                <!-- Plus (рекомендуемый) -->
+                <div class="rounded-2xl bg-gradient-to-b from-indigo-900/40 to-gray-900/70 border border-indigo-500/50 shadow-xl shadow-indigo-500/10 p-6 relative transform scale-105 md:scale-100 md:hover:scale-105 transition duration-300">
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-indigo-600 px-4 py-0.5 rounded-full text-xs font-bold">🔥 Самый популярный</div>
+                    <h3 class="text-2xl font-bold text-indigo-200">Plus</h3>
+                    <div class="mt-4"><span class="text-4xl font-extrabold">₽1 190</span><span class="text-gray-400">/мес</span></div>
+                    <ul class="mt-6 space-y-3">
+                        <li class="flex items-center gap-2">✅ Всё из Start</li>
+                        <li class="flex items-center gap-2">✅ Гибкие интервалы (Помодоро / 90/20)</li>
+                        <li class="flex items-center gap-2">✅ Интеграция с календарем</li>
+                        <li class="flex items-center gap-2">✅ Трекинг отвлечений</li>
+                    </ul>
+                    <a href="#apply" class="block text-center mt-8 py-2.5 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 font-semibold shadow-lg hover:shadow-indigo-500/40 transition">Выбрать</a>
+                </div>
+                <!-- Pro -->
+                <div class="rounded-2xl bg-gradient-to-b from-gray-900/80 to-gray-800/40 border border-gray-700 p-6 backdrop-blur-sm hover:scale-[1.02] transition duration-300">
+                    <h3 class="text-2xl font-bold">Pro</h3>
+                    <div class="mt-4"><span class="text-4xl font-extrabold">₽2 290</span><span class="text-gray-400">/мес</span></div>
+                    <ul class="mt-6 space-y-3">
+                        <li class="flex items-center gap-2">✅ Всё из Plus</li>
+                        <li class="flex items-center gap-2">✅ AI-ассистент фокуса</li>
+                        <li class="flex items-center gap-2">✅ Детальная аналитика + экспорт</li>
+                        <li class="flex items-center gap-2">✅ Приоритетная поддержка 24/7</li>
+                    </ul>
+                    <a href="#apply" class="block text-center mt-8 py-2.5 rounded-full border border-purple-500 text-purple-300 hover:bg-purple-600/20 transition">Выбрать</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Оформление заявки (#apply) с формой + дисклеймер -->
+        <section id="apply" class="max-w-3xl mx-auto px-6 lg:px-8 py-20">
+            <div class="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 p-8 md:p-10 shadow-2xl">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold">Подключить таймер</h2>
+                    <p class="text-gray-400 mt-2">Заполните форму — мы поможем настроить режим глубокого фокуса</p>
+                </div>
+                <form id="focusForm" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Имя <span class="text-red-400">*</span></label>
+                        <input type="text" id="name" class="w-full px-5 py-3 bg-black/40 border border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition" placeholder="Алексей Смирнов">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Телефон <span class="text-red-400">*</span></label>
+                        <input type="tel" id="phone" class="w-full px-5 py-3 bg-black/40 border border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="+7 (900) 123-45-67">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Тариф <span class="text-red-400">*</span></label>
+                        <select id="tariff" class="w-full px-5 py-3 bg-black/40 border border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
+                            <option value="" disabled selected>Выберите тариф</option>
+                            <option value="Start">Start — 590₽/мес</option>
+                            <option value="Plus">Plus — 1 190₽/мес</option>
+                            <option value="Pro">Pro — 2 290₽/мес</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Комментарий (необязательно)</label>
+                        <textarea id="comment" rows="3" class="w-full px-5 py-3 bg-black/40 border border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Ваши пожелания или вопросы..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 font-bold text-lg shadow-lg hover:shadow-indigo-500/40 transition transform hover:scale-[1.01]">Подключить таймер</button>
+                </form>
+                <div class="mt-6 text-center text-xs text-gray-500">
+                    🔒 Дисклеймер: Нажимая «Подключить таймер», вы соглашаетесь с обработкой данных и получаете персональную консультацию по настройке режима фокуса.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 mt-12 py-8 text-center text-gray-500 text-sm">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>© 2025 FocusTimer — сессии глубокого фокуса.</div>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-indigo-300 transition">Политика конфиденциальности</a>
+                <a href="#" class="hover:text-indigo-300 transition">Договор оферты</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Только JS для валидации формы, строго по заданию -->
+    <script>
+        (function() {
+            const form = document.getElementById('focusForm');
+            if (!form) return;
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // предотвращаем перезагрузку страницы
+
+                // Получаем значения полей
+                const nameInput = document.getElementById('name');
+                const phoneInput = document.getElementById('phone');
+                const tariffSelect = document.getElementById('tariff');
+
+                let isValid = true;
+
+                // Проверка имени (не пустое, обрезаем пробелы)
+                const nameVal = nameInput ? nameInput.value.trim() : '';
+                if (nameVal === '') {
+                    isValid = false;
+                }
+
+                // Проверка телефона (не пустое)
+                const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+                if (phoneVal === '') {
+                    isValid = false;
+                }
+
+                // Проверка тарифа (должен быть выбран не начальный пустой)
+                const tariffVal = tariffSelect ? tariffSelect.value : '';
+                if (tariffVal === '' || tariffVal === null || tariffVal === undefined) {
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    alert("Отлично! Мы свяжемся и поможем настроить режим.");
+                    // Опционально: очистка формы (по желанию сохраняем UX, но не требуется)
+                    // form.reset(); // необязательно, но не запрещено. для чистоты опыта.
+                } else {
+                    alert("Заполните имя, телефон и выберите тариф.");
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
